@@ -1,0 +1,61 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>PDF Term Finder settings</title>
+  <link rel="stylesheet" href="options.css">
+  <script type="module" src="options.js"></script>
+</head>
+<body>
+  <main>
+    <h1>PDF Term Finder</h1>
+    <p class="lead">Keep a named list of words and phrases for each purpose, and switch between them here or in the finder's side panel.</p>
+
+    <form id="form">
+      <div class="preset-row">
+        <label for="preset" class="label">Preset</label>
+        <select id="preset"></select>
+        <button type="button" id="newPreset" class="btn">New preset</button>
+      </div>
+      <label for="presetName" class="label">Preset name</label>
+      <input id="presetName" type="text" maxlength="60" autocomplete="off">
+      <label for="terms" class="label">Key terms, one per line</label>
+      <textarea id="terms" rows="14" spellcheck="false" placeholder="permit&#10;land use&#10;contamin*&#10;wom?n"></textarea>
+
+      <div class="help">
+        <h2>How matching works</h2>
+        <ul>
+          <li>Upper and lower case are treated the same.</li>
+          <li>Phrases work, even when the words are split across lines in the PDF.</li>
+          <li><code>*</code> stands for any letters, so <code>contamin*</code> finds “contaminated” and “contamination”, and <code>*ation</code> finds words ending in “ation”.</li>
+          <li><code>?</code> stands for exactly one letter, so <code>wom?n</code> finds “woman” and “women”.</li>
+          <li>Lines starting with <code>#</code> are notes and are ignored.</li>
+        </ul>
+      </div>
+
+      <label class="check"><input type="checkbox" id="wordEndings"> Also match simple endings (-s, -es, -ed, -ing, -er, -ly, ’s)</label>
+      <label class="check"><input type="checkbox" id="insideWords"> Match inside longer words (“art” would also find “start”)</label>
+      <label class="check"><input type="checkbox" id="ocr"> Read pages that are only images (scans, pictures of typed pages) with OCR. It only runs on pages that have no text, and it all happens on this device. Turn off to save battery on a phone.</label>
+
+      <div class="actions">
+        <button type="submit" class="btn primary">Save</button>
+        <button type="button" id="deletePreset" class="btn danger">Delete this preset</button>
+        <span id="status" class="status" role="status"></span>
+      </div>
+    </form>
+
+    <section class="card">
+      <h2>How to use it</h2>
+      <ol>
+        <li>Open a PDF in Firefox as usual.</li>
+        <li>Click the PDF Term Finder button in the toolbar (on Android: the ⋮ menu → Extensions → PDF Term Finder).</li>
+        <li>The PDF reopens with your terms highlighted. Use the panel to jump between matches and read their context.</li>
+      </ol>
+      <p>PDFs saved on your device: open the finder and use <strong>Open file</strong>, or drag the file onto it.</p>
+      <p class="muted">Your terms are stored only in this browser. The add-on never sends your terms or PDFs anywhere.</p>
+      <p><a id="openViewer" class="btn" href="../viewer/viewer.html">Open the finder</a></p>
+    </section>
+  </main>
+</body>
+</html>

@@ -1,0 +1,94 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>PDF Term Finder</title>
+  <link rel="stylesheet" href="viewer.css">
+  <script type="module" src="viewer.js"></script>
+</head>
+<body>
+  <header class="bar">
+    <button id="panelToggle" class="btn" type="button" aria-controls="panel" aria-expanded="true" title="Show or hide the term list">
+      <svg viewBox="0 0 20 20" aria-hidden="true"><path d="M3 5h14M3 10h14M3 15h9" /></svg>
+      <span>Terms</span>
+    </button>
+    <div class="doc-title" id="docTitle">No PDF open</div>
+
+    <div class="nav" role="group" aria-label="All matches">
+      <button id="prevHit" class="btn icon" type="button" title="Previous match (P)" aria-label="Previous match">
+        <svg viewBox="0 0 20 20" aria-hidden="true"><path d="M12.5 4.5 7 10l5.5 5.5" /></svg>
+      </button>
+      <span id="hitPos" class="hit-pos">0 matches</span>
+      <button id="nextHit" class="btn icon" type="button" title="Next match (N)" aria-label="Next match">
+        <svg viewBox="0 0 20 20" aria-hidden="true"><path d="M7.5 4.5 13 10l-5.5 5.5" /></svg>
+      </button>
+    </div>
+
+    <div class="zoom" role="group" aria-label="Zoom">
+      <button id="zoomOut" class="btn icon" type="button" title="Zoom out" aria-label="Zoom out">
+        <svg viewBox="0 0 20 20" aria-hidden="true"><path d="M5 10h10" /></svg>
+      </button>
+      <button id="zoomFit" class="btn zoom-level" type="button" title="Fit to width">Fit</button>
+      <button id="zoomIn" class="btn icon" type="button" title="Zoom in" aria-label="Zoom in">
+        <svg viewBox="0 0 20 20" aria-hidden="true"><path d="M5 10h10M10 5v10" /></svg>
+      </button>
+    </div>
+
+    <label class="btn primary" for="fileInput" title="Open a PDF from this device">
+      <svg viewBox="0 0 20 20" aria-hidden="true"><path d="M4 16h12M10 4v9M6 9l4 4 4-4" /></svg>
+      <span>Open file</span>
+    </label>
+    <input id="fileInput" type="file" accept="application/pdf,.pdf" hidden>
+  </header>
+
+  <div class="main">
+    <div id="scroller" class="scroller" tabindex="-1">
+      <div id="message" class="message">
+        <h1>Open a PDF to search it</h1>
+        <p>Use <strong>Open file</strong>, drag a PDF here, or click the toolbar button while a PDF is open in Firefox.</p>
+        <p class="small">Your terms and your PDFs stay on this device.</p>
+      </div>
+      <div id="pages" class="pages"></div>
+    </div>
+
+    <aside id="panel" class="panel" aria-label="Found terms">
+      <div class="panel-head">
+        <button id="sheetHandle" class="sheet-handle" type="button" aria-label="Expand or shrink the term list"></button>
+        <div class="panel-title">
+          <h2>Found terms</h2>
+          <span id="scanStatus" class="scan-status"></span>
+        </div>
+        <button id="editTermsBtn" class="btn small" type="button" aria-expanded="false" aria-controls="termEditor">Edit terms</button>
+      </div>
+      <div class="preset-bar">
+        <label for="presetSelect">Preset</label>
+        <select id="presetSelect" title="Switch to a different saved term list"></select>
+      </div>
+
+      <form id="termEditor" class="term-editor" hidden>
+        <label for="presetName" class="field-label">Preset name</label>
+        <input id="presetName" type="text" maxlength="60" autocomplete="off">
+        <label for="termsInput" class="field-label">One term or phrase per line</label>
+        <textarea id="termsInput" rows="8" spellcheck="false" placeholder="permit&#10;land use&#10;contamin*&#10;wom?n"></textarea>
+        <p class="hint"><code>*</code> = any letters (part of a word) · <code>?</code> = exactly one letter · lines starting with <code>#</code> are ignored. Upper and lower case are treated the same.</p>
+        <label class="check"><input type="checkbox" id="optEndings"> Also match simple endings (-s, -es, -ed, -ing, -er, -ly)</label>
+        <label class="check"><input type="checkbox" id="optInside"> Match inside longer words (“art” finds “start”)</label>
+        <label class="check"><input type="checkbox" id="optOcr"> Read pages that are only images (OCR). Only runs on pages with no text.</label>
+        <div class="editor-actions">
+          <button type="submit" class="btn primary">Save and search</button>
+          <button type="button" id="saveAsNew" class="btn">Save as new preset</button>
+        </div>
+        <div class="editor-actions secondary">
+          <button type="button" id="cancelEdit" class="btn small">Cancel</button>
+          <button type="button" id="deletePreset" class="btn small danger">Delete this preset</button>
+        </div>
+      </form>
+
+      <div id="termList" class="term-list"></div>
+    </aside>
+  </div>
+
+  <div id="dropHint" class="drop-hint" hidden>Drop the PDF to open it</div>
+</body>
+</html>

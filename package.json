@@ -1,0 +1,17 @@
+{
+  "name": "pdf-term-finder",
+  "version": "1.1.0",
+  "private": true,
+  "description": "Firefox and Chrome extension that highlights a list of key terms in PDFs, with OCR for image-only pages. Runs entirely on your device.",
+  "license": "MIT",
+  "scripts": {
+    "build": "bash scripts/build.sh",
+    "lint": "web-ext lint -s extension",
+    "test": "node tests/matcher.test.mjs && node tests/viewer.test.cjs && node tests/layout.test.cjs && node tests/ocr.test.cjs",
+    "test:chrome": "bash scripts/build.sh && node tests/chrome.test.cjs"
+  },
+  "devDependencies": {
+    "playwright": "^1.56.0",
+    "web-ext": "^10.0.0"
+  }
+}

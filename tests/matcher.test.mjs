@@ -1,0 +1,27 @@
+import assert from "node:assert/strict";
+import * as M from "../extension/viewer/matcher.js";
+const D = M.DEFAULT_SETTINGS;
+const run = (terms, text, opts = D) => M.findMatches(text, M.buildMatcher(terms, opts)).map(m => text.slice(m.start, m.end) + "#" + terms[m.term]);
+assert.deepEqual(M.parseTerms("permit\n  Permit \n# note\n\nland   use\n*\n"), ["permit", "land use"]);
+assert.deepEqual(run(["permit"], "A Permit, two PERMITS, permitted, impermit."), ["Permit#permit", "PERMITS#permit"]);
+assert.deepEqual(run(["permit"], "impermit", { ...D, insideWords: true }), ["permit#permit"]);
+assert.deepEqual(run(["land use"], "the land\nuse plan; landuse"), ["land\nuse#land use"]);
+assert.deepEqual(run(["*ation", "contamin*"], "Contamination and remediation of a station"), ["Contamination#contamin*", "remediation#*ation", "station#*ation"]);
+assert.deepEqual(run(["wom?n"], "woman women womxn wmn"), ["woman#wom?n", "women#wom?n", "womxn#wom?n"]);
+assert.deepEqual(run(["permit", "land use permit"], "a land use permit"), ["land use permit#land use permit"]);
+assert.deepEqual(run(["owner's"], "the owner’s land"), ["owner’s#owner's"]);
+assert.deepEqual(run(["c++", "U.S."], "c++ and U.S. law"), ["c++#c++", "U.S.#U.S."]);
+assert.deepEqual(run(["grant"], "grants granted granting grantee"), ["grants#grant", "granted#grant", "granting#grant"]);
+assert.deepEqual(run(["grant"], "grants", { ...D, wordEndings: false }), []);
+// page text mapping with ligatures, soft hyphen and EOL
+const items = [{ str: "The ﬁrst con", hasEOL: false }, { str: "­tract", hasEOL: true }, { str: "Land", hasEOL: false }, { str: " ", hasEOL: false }, { str: "use", hasEOL: false }];
+const page = M.buildPageText(items);
+assert.equal(page.text, "The first contract\nLand use");
+const ms = M.findMatches(page.text, M.buildMatcher(["first", "contract", "land use"], D));
+assert.equal(ms.length, 3);
+assert.deepEqual(M.matchToPieces(page, ms[0].start, ms[0].end), [{ item: 0, start: 4, end: 8 }]);
+assert.deepEqual(M.matchToPieces(page, ms[1].start, ms[1].end), [{ item: 0, start: 9, end: 12 }, { item: 1, start: 1, end: 6 }]);
+assert.deepEqual(M.matchToPieces(page, ms[2].start, ms[2].end), [{ item: 2, start: 0, end: 4 }, { item: 3, start: 0, end: 1 }, { item: 4, start: 0, end: 3 }]);
+const c = M.contextOf("one two three four five six seven", 14, 18, 8);
+assert.equal(c.match, "four");
+console.log("all matcher tests passed");

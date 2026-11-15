@@ -1,0 +1,38 @@
+{
+  "manifest_version": 3,
+  "name": "PDF Term Finder",
+  "version": "1.1.0",
+  "description": "Highlights your list of key terms in PDFs and lets you jump between every match, with context. Everything runs on your device.",
+  "icons": {
+    "48": "icons/icon.svg",
+    "96": "icons/icon.svg"
+  },
+  "action": {
+    "default_title": "Find my terms in this PDF",
+    "default_icon": "icons/icon.svg"
+  },
+  "background": {
+    "scripts": ["background.js"]
+  },
+  "options_ui": {
+    "page": "options/options.html",
+    "open_in_tab": true
+  },
+  "permissions": ["storage", "activeTab", "menus"],
+  "host_permissions": ["<all_urls>"],
+  "content_security_policy": {
+    "extension_pages": "script-src 'self' 'wasm-unsafe-eval'; object-src 'none';"
+  },
+  "browser_specific_settings": {
+    "gecko": {
+      "id": "pdf-term-finder@volunteer.local",
+      "strict_min_version": "140.0",
+      "data_collection_permissions": {
+        "required": ["none"]
+      }
+    },
+    "gecko_android": {
+      "strict_min_version": "142.0"
+    }
+  }
+}
